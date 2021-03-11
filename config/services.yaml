@@ -1,0 +1,51 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    Eagle\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    _instanceof:
+        # all services implementing the CommandHandlerInterface
+        # will be registered on the command.bus bus
+        Eagle\Module\Common\Application\MessageHandler\CommandHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: command.bus }
+
+        # while those implementing QueryHandlerInterface will be
+        # registered on the query.bus bus
+        Eagle\Module\Common\Application\MessageHandler\QueryHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: query.bus }
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    Eagle\Module\Measurement\UI\Web\Controller\:
+        resource: '../src/Module/Measurement/UI/Web/Controller/'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    Eagle\Module\Common\Domain\Exception\Listener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    Eagle\Module\Common\UI\Web\UrlQuery\Request\Subscriber\SortQuerySubscriber:
+        tags:
+            - { name: kernel.event_subscriber, event: kernel.request }
+
+    # workaround for broken library
+    gesdinet.jwtrefreshtoken.refresh_token_manager:
+        class:  Eagle\Doctrine\RefreshTokenManager
+        public: true
+        arguments: [ '@gesdinet.jwtrefreshtoken.object_manager', '%gesdinet.jwtrefreshtoken.refresh_token.class%' ]

@@ -1,0 +1,9 @@
+register:
+  path: /user/register
+  controller: Eagle\Module\User\UI\Web\Controller\AuthController::register
+  methods: POST
+
+api_login_check:
+  path: /user/get-token
+  controller: Eagle\Module\User\UI\Web\Controller\AuthController::getTokenUser
+  methods: POST

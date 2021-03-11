@@ -1,0 +1,10 @@
+security:
+    encoders:
+        Eagle\Module\User\Infrastructure\Entity\User:
+            algorithm: plaintext
+
+    providers:
+        app_user_provider:
+            entity:
+                class: Eagle\Module\User\Infrastructure\Entity\User
+                property: email

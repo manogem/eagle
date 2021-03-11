@@ -1,0 +1,9 @@
+add:
+  path: /api/measurement
+  controller: Eagle\Module\Measurement\UI\Web\Controller\MeasurementController:create
+  methods: POST
+
+get_subjects_latest_measurement:
+  path: /api/measurement-subject/measurement/latest
+  controller: Eagle\Module\Measurement\UI\Web\Controller\MeasurementController:getSubjectsLatestMeasurement
+  methods: GET

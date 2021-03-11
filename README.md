@@ -30,7 +30,7 @@ Create user:
      }`
      
 Get token:     
-* POST request on: `/api/login_check`
+* POST request on: `/user/get-token`
 * with example body:
     `{
      	"username": "user@user.com",
